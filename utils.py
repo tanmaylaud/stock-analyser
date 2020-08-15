@@ -1,7 +1,8 @@
 import finnhub as fin
 import pandas as pd
 import streamlit as st
-finnhub_client = fin.Client(api_key="bsrptnv48v6tucpgjv7g")
+import os
+finnhub_client = fin.Client(api_key=os.environ['FINHUB_API_KEY'])
 
 # Stock candles
 
