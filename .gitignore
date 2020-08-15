@@ -2,3 +2,4 @@ venv
 *.ipynb
 __pycache__
 *.json
+*.txt

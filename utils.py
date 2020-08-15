@@ -48,7 +48,6 @@ def get_symbols(exchange='US'):
 def is_valid_symbol(symbol) -> bool:
     symbols = get_symbols()
     print(symbols)
-    print(symbol in list(symbols['displaySymbol']))
     return symbol in list(symbols['displaySymbol'])
 
 
