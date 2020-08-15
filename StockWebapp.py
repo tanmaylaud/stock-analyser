@@ -5,7 +5,7 @@ from bokeh.plotting import figure
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from utils import get_exchanges, get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info
+from utils import get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info
 from datetime import datetime as dt, timedelta
 
 MAX_DATE_RANGE = 365*10
