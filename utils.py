@@ -10,14 +10,14 @@ finnhub_client = fin.Client(api_key=os.environ['FINHUB_API_KEY'])
 # Get the latest stock data from finnhub for given date range
 
 
-@st.cache
+@st.cache(show_spinner=False)
 def get_stock_candles(code, resolution, start, end):
     return finnhub_client.stock_candles(code, resolution, start, end)
 
 # Get the latest prices from finnhub for given date range
 
 
-@st.cache
+@st.cache(show_spinner=False)
 def get_price(code, resolution, start, end):
     df = pd.DataFrame(get_stock_candles(
         code, resolution, start, end))
@@ -28,7 +28,7 @@ def get_price(code, resolution, start, end):
 # Get the latest volumes from finnhub for given date range
 
 
-@st.cache
+@st.cache(show_spinner=False)
 def get_volume(code, resolution, start, end):
     df = pd.DataFrame(get_stock_candles(
         code, resolution, start, end))
@@ -37,7 +37,7 @@ def get_volume(code, resolution, start, end):
     return df[['v', 't']]
 
 
-@st.cache
+@st.cache(show_spinner=False)
 def get_symbols(exchange='US'):
     symbols = finnhub_client.stock_symbols(exchange)
     if len(symbols) != 0:
