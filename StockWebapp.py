@@ -2,11 +2,10 @@
 
 # Import the libraries
 from bokeh.plotting import figure
-from bokeh.models.tools import HoverTool
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from utils import get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info
+from utils import get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info, get_hover_tool
 from datetime import datetime as dt, timedelta
 
 MAX_DATE_RANGE = 365*10
@@ -17,16 +16,8 @@ TOOLTIPS = [
     ("y", "$y{^-09.3f}"),
 ]
 
-hover_tool = HoverTool(
-    tooltips=TOOLTIPS,
-
-    formatters={
-        '$x': 'datetime',  # use 'datetime' formatter for '@date' field
-        # use default 'numeral' formatter for other fields
-    },
-
-
-)
+price_hover_tool = get_hover_tool()
+volume_hover_tool = get_hover_tool()
 # Adding title and image
 st.title("Stock Price Analyser")
 st.write("""
@@ -78,7 +69,7 @@ if is_valid_symbol(symbol):
         y_axis_label='Price',
         x_axis_type='datetime',
     )
-    p.add_tools(hover_tool)
+    p.add_tools(price_hover_tool)
     if displayO:
         p.line(x=price['t'], y=price['o'], legend='Open Price',
                line_color='blue', line_width=2)
@@ -101,7 +92,7 @@ if is_valid_symbol(symbol):
         x_axis_label='Time',
         y_axis_label='Volume',
         x_axis_type='datetime')
-    v.add_tools(hover_tool)
+    v.add_tools(volume_hover_tool)
     v.line(x=volumes['t'], y=volumes['v'], legend='Volume',
            line_color='blue', line_width=2)
 

@@ -1,6 +1,7 @@
 import finnhub as fin
 import pandas as pd
 import streamlit as st
+from bokeh.models.tools import HoverTool
 import os
 finnhub_client = fin.Client(api_key=os.environ['FINHUB_API_KEY'])
 
@@ -54,3 +55,18 @@ def is_valid_symbol(symbol) -> bool:
 def get_symbol_info(symbol) -> bool:
     symbols = get_symbols()
     return symbols[symbols['displaySymbol'] == symbol].set_index('description')
+
+
+def get_hover_tool():
+    TOOLTIPS = [
+        ("Date", "$x{%F}"),
+        ("y", "$y{^-09.3f}"),
+    ]
+    return HoverTool(
+        tooltips=TOOLTIPS,
+
+        formatters={
+            '$x': 'datetime',  # use 'datetime' formatter for '@date' field
+            # use default 'numeral' formatter for other fields
+        },
+    )
