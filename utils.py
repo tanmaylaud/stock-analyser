@@ -6,10 +6,14 @@ finnhub_client = fin.Client(api_key=os.environ['FINHUB_API_KEY'])
 
 # Stock candles
 
+# Get the latest stock data from finnhub for given date range
+
 
 @st.cache
 def get_stock_candles(code, resolution, start, end):
     return finnhub_client.stock_candles(code, resolution, start, end)
+
+# Get the latest prices from finnhub for given date range
 
 
 @st.cache
@@ -20,6 +24,8 @@ def get_price(code, resolution, start, end):
     df.t = pd.to_datetime(df.t, unit='s')
     return df
 
+# Get the latest volumes from finnhub for given date range
+
 
 @st.cache
 def get_volume(code, resolution, start, end):
@@ -28,11 +34,6 @@ def get_volume(code, resolution, start, end):
     df.set_index('t')
     df.t = pd.to_datetime(df.t, unit='s')
     return df[['v', 't']]
-
-
-@st.cache
-def get_exchanges():
-    return pd.read_csv('./static/exchanges.csv')[['name', 'code']]
 
 
 @st.cache
