@@ -5,15 +5,21 @@ from bokeh.plotting import figure
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from utils import get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info, get_hover_tool, get_company_profile, get_initial_symbol
+from utils import *
+from charts import get_price_chart, get_volume_chart
 from datetime import datetime as dt, timedelta
 import random
 MAX_DATE_RANGE = 365*10
 today = dt.now().replace(second=0, microsecond=0)
 
 
-price_hover_tool = get_hover_tool()
-volume_hover_tool = get_hover_tool()
+def get_symbol(isCrypto):
+    if isCrypto:
+        return st.sidebar.selectbox('Select Coin', options=get_crypto_symbols()['symbol'])
+    return st.sidebar.text_input(
+        'Input Ticker (eg. GOOG,AAPL,AMZN)', value=get_initial_symbol()).upper()
+
+
 # Adding title and image
 st.title("Stock Price Analyser")
 st.write("""
@@ -23,11 +29,12 @@ st.write("""
 #image = Image.open()
 #st.image(image, use_column_width=True)
 
-st.sidebar.header('User Input')
-
-
-symbol = st.sidebar.text_input(
-    'Input Ticker (eg. GOOG,AAPL,AMZN)', value=get_initial_symbol()).upper()
+st.sidebar.header('Stockkerr')
+category = st.sidebar.radio('Select Category', ['Stocks', 'Crypto'], index=0)
+print(category)
+isCrypto = category == 'Crypto'
+print(isCrypto)
+symbol = get_symbol(isCrypto)
 
 start_input = st.sidebar.slider(
     'Select Date Range',
@@ -51,54 +58,35 @@ displayC = st.sidebar.checkbox('Close Price')
 displayH = st.sidebar.checkbox('High Price')
 displayL = st.sidebar.checkbox('Low Price')
 
+priceChartVisible = displayO or displayC or displayH or displayL
+
 start_date = dt.timestamp(start_input)
 end_date = dt.timestamp(end_input)
 
-if is_valid_symbol(symbol):
+if is_valid_symbol(symbol, isCrypto):
 
-    price = get_price(symbol, 'D', int(start_date), int(end_date))
-    volumes = get_volume(symbol, 'D', int(start_date), int(end_date))
-    company = get_symbol_info(symbol)
+    price = get_price(symbol, isCrypto, 'D', int(start_date), int(end_date))
+    volumes = get_volume(symbol, isCrypto, 'D', int(start_date), int(end_date))
+    company = get_symbol_info(symbol, isCrypto)
     profile, logo = get_company_profile(symbol)
+
     if logo:
         st.image(logo, width=40)
+
     st.write(company)
+
     if not profile.empty:
         st.write(profile)
-    p = figure(
-        title=symbol,
-        x_axis_label='Time',
-        y_axis_label='Price',
-        x_axis_type='datetime',
-    )
-    p.add_tools(price_hover_tool)
-    if displayO:
-        p.line(x=price['t'], y=price['o'], legend='Open Price',
-               line_color='blue', line_width=2)
-    if displayC:
-        p.line(x=price['t'], y=price['c'],
-               legend='Close Price', line_color='orange', width=2)
-    if displayH:
-        p.line(x=price['t'], y=price['h'], legend='High Price',
-               line_color='green', line_width=2)
-    if displayL:
-        p.line(x=price['t'], y=price['l'], legend='Low Price',
-               line_color='red', line_width=2)
 
-    st.write("## Stock Price")
-
-    st.bokeh_chart(p, use_container_width=True)
-
-    v = figure(
-        title=symbol,
-        x_axis_label='Time',
-        y_axis_label='Volume',
-        x_axis_type='datetime')
-    v.add_tools(volume_hover_tool)
-    v.line(x=volumes['t'], y=volumes['v'], legend='Volume',
-           line_color='blue', line_width=2)
+    if priceChartVisible:
+        st.write("## Stock Price")
+        p = None
+        p = get_price_chart(symbol, price, displayO,
+                            displayC, displayL, displayH)
+        st.bokeh_chart(p, use_container_width=True)
 
     st.write("## Stock Volume")
+    v = get_volume_chart(symbol, volumes)
     st.bokeh_chart(v, use_container_width=True)
 
 else:
