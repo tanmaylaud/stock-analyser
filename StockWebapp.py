@@ -5,9 +5,9 @@ from bokeh.plotting import figure
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from utils import get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info, get_hover_tool
+from utils import get_symbols, get_price, get_volume, is_valid_symbol, get_symbol_info, get_hover_tool, get_company_profile, get_initial_symbol
 from datetime import datetime as dt, timedelta
-
+import random
 MAX_DATE_RANGE = 365*10
 today = dt.now().replace(second=0, microsecond=0)
 
@@ -27,7 +27,7 @@ st.sidebar.header('User Input')
 
 
 symbol = st.sidebar.text_input(
-    'Input Ticker (eg. GOOG,AAPL,AMZN', value='GOOG').upper()
+    'Input Ticker (eg. GOOG,AAPL,AMZN)', value=get_initial_symbol()).upper()
 
 start_input = st.sidebar.slider(
     'Select Date Range',
@@ -50,15 +50,21 @@ displayO = st.sidebar.checkbox('Open Price', value=True)
 displayC = st.sidebar.checkbox('Close Price')
 displayH = st.sidebar.checkbox('High Price')
 displayL = st.sidebar.checkbox('Low Price')
+
 start_date = dt.timestamp(start_input)
 end_date = dt.timestamp(end_input)
+
 if is_valid_symbol(symbol):
 
     price = get_price(symbol, 'D', int(start_date), int(end_date))
     volumes = get_volume(symbol, 'D', int(start_date), int(end_date))
     company = get_symbol_info(symbol)
-
+    profile, logo = get_company_profile(symbol)
+    if logo:
+        st.image(logo, width=40)
     st.write(company)
+    if not profile.empty:
+        st.write(profile)
     p = figure(
         title=symbol,
         x_axis_label='Time',
