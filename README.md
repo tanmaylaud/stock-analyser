@@ -19,6 +19,14 @@ https://stockkerr.herokuapp.com/
   pip install -r requirements.txt
 ```
 
+# Run the Streamlit app
+
+```python
+streamlit run StockWebapp.py
+
+# App launching on port 8051...
+```
+
 # Libraries
 
 | Name           | Type   | Description                                                                                                                                                                                                          |
