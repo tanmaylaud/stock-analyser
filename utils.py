@@ -26,7 +26,7 @@ def get_candles(code, resolution, start, end, isCrypto):
 
 @st.cache(show_spinner=False)
 def get_crypto_symbols():
-    return pd.DataFrame(finnhub_client.crypto_symbols('COINBASE'))
+    return pd.DataFrame(finnhub_client.crypto_symbols('BINANCE'))
 
 
 @st.cache(show_spinner=False)
