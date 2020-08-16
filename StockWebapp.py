@@ -11,10 +11,6 @@ from datetime import datetime as dt, timedelta
 MAX_DATE_RANGE = 365*10
 today = dt.now().replace(second=0, microsecond=0)
 
-TOOLTIPS = [
-    ("Date", "$x{%F}"),
-    ("y", "$y{^-09.3f}"),
-]
 
 price_hover_tool = get_hover_tool()
 volume_hover_tool = get_hover_tool()
