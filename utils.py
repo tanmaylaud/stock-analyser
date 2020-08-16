@@ -3,11 +3,18 @@ import pandas as pd
 import streamlit as st
 from bokeh.models.tools import HoverTool
 import os
+import random
+
 finnhub_client = fin.Client(api_key=os.environ['FINHUB_API_KEY'])
 
 # Stock candles
 
 # Get the latest stock data from finnhub for given date range
+
+
+@st.cache(show_spinner=False)
+def get_initial_symbol():
+    return random.choice(['GOOG', 'AMZN', 'AAPL', 'TSLA'])
 
 
 @st.cache(show_spinner=False)
@@ -54,7 +61,23 @@ def is_valid_symbol(symbol) -> bool:
 
 def get_symbol_info(symbol) -> bool:
     symbols = get_symbols()
-    return symbols[symbols['displaySymbol'] == symbol].set_index('description')
+    df = symbols[symbols['displaySymbol'] == symbol].set_index(
+        'description').drop(columns='displaySymbol')
+    df.columns = ['Currency', 'Symbol', 'Type']
+    return df
+
+
+@st.cache(show_spinner=False)
+def get_company_profile(symbol):
+    profile = finnhub_client.company_profile2(symbol=symbol)
+    if len(profile) == 0:
+        return pd.DataFrame(), None
+    json = pd.json_normalize(profile)
+    df = pd.DataFrame(
+        json, columns=['exchange', 'finnhubIndustry', 'marketCapitalization'])
+    df.columns = ['Exchange', 'Industry', 'Market Cap']
+    df = df.set_index('Exchange')
+    return df, json.logo[0]
 
 
 def get_hover_tool():
