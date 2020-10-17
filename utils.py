@@ -5,7 +5,7 @@ import streamlit as st
 import os
 import random
 
-finnhub_client = fin.Client(api_key=os.environ['FINHUB_API_KEY'])
+finnhub_client = fin.Client(api_key='bsrptnv48v6tucpgjv7g')
 
 # Stock candles
 
