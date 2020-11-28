@@ -1,4 +1,4 @@
-# # Welcome to Stockkerr :wave:
+# # Welcome to Stockkerr :wave: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/tanmaylaud/stock-analyser/release/StockWebapp.py)
 
 A python based webapp to analyse historical prices of stocks
 
