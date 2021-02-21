@@ -1,4 +1,4 @@
-# # Welcome to Stockkerr :wave:
+## Welcome to Stockkerr :wave:
 
 A python based webapp to analyse historical prices of stocks
 
